@@ -1,0 +1,6 @@
+.out/
+.nimcache/
+*.nimble.lock
+nimble.develop
+vendor/
+models/
