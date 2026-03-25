@@ -1,7 +1,7 @@
 ## Unit tests for Choice/Life lattice types.
 
 import std/unittest
-import llama/lattice
+import basis/code/choice
 
 suite "Result[T, E]":
   test "good construction and predicates":

@@ -9,3 +9,4 @@ src_dir     = "src"
 # dependencies...
 
 requires "nim >= 2.2.8"
+requires "basis >= 0.1.0"

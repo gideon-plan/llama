@@ -4,7 +4,7 @@
 
 import std/[unittest, os, strutils]
 import llama
-import llama/lattice
+import basis/code/choice
 import llama/ffi
 
 # =====================================================================================================================
