@@ -2,6 +2,8 @@
 ## Non-deprecated, in-scope functions only.
 ## Out of scope: training, state save/load, quantization, server mode, GGML internals.
 
+import segfaults
+
 {.experimental: "strict_funcs".}
 
 import std/os
