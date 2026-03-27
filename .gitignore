@@ -4,3 +4,4 @@
 nimble.develop
 vendor/
 models/
+model/*.gguf
