@@ -1,3 +1,4 @@
+{.experimental: "strictFuncs".}
 ## Non-happy-path stress tests for Choice/Life lattice types in real FFI use.
 ## Validates Ugly, Bad, None, degraded, and use-after-Done paths.
 ## Requires LLAMA_MODEL_PATH env var.

@@ -1,3 +1,4 @@
+{.experimental: "strictFuncs".}
 ## Unit tests for Choice/Life lattice types.
 
 import std/unittest

@@ -1,3 +1,4 @@
+{.experimental: "strictFuncs".}
 ## Integration tests for llama.cpp API.
 ## Requires LLAMA_MODEL_PATH env var pointing to a GGUF model file.
 ## Example: LLAMA_MODEL_PATH=~/.cache/models/qwen3-0.6b-q4_0.gguf nim r tests/tapi.nim
