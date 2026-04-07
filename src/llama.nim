@@ -3,3 +3,7 @@
 
 import llama/api
 export api
+
+when defined(ggufIntrospect):
+  import llama/gguf
+  export gguf
