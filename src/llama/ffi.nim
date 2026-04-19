@@ -47,7 +47,7 @@ type
 # =====================================================================================================================
 
 type
-  LlamaVocabType* {.pure, size: sizeof(cint).} = enum
+  LlamaVocabKind* {.pure, size: sizeof(cint).} = enum
     None = 0
     Spm = 1
     Bpe = 2
@@ -56,7 +56,7 @@ type
     Rwkv = 5
     Plamo2 = 6
 
-  LlamaTokenType* {.pure, size: sizeof(cint).} = enum
+  LlamaTokenKind* {.pure, size: sizeof(cint).} = enum
     Undefined = 0
     Normal = 1
     Unknown = 2
@@ -78,7 +78,7 @@ type
     Rstrip = 256
     SingleWord = 512
 
-  LlamaPoolingType* {.pure, size: sizeof(cint).} = enum
+  LlamaPoolingKind* {.pure, size: sizeof(cint).} = enum
     Unspecified = -1
     None = 0
     Mean = 1
@@ -86,12 +86,12 @@ type
     Last = 3
     Rank = 4
 
-  LlamaAttentionType* {.pure, size: sizeof(cint).} = enum
+  LlamaAttentionKind* {.pure, size: sizeof(cint).} = enum
     Unspecified = -1
     Causal = 0
     NonCausal = 1
 
-  LlamaFlashAttnType* {.pure, size: sizeof(cint).} = enum
+  LlamaFlashAttnKind* {.pure, size: sizeof(cint).} = enum
     Auto = -1
     Disabled = 0
     Enabled = 1
@@ -101,7 +101,7 @@ type
     Layer = 1
     Row = 2
 
-  LlamaRopeScalingType* {.pure, size: sizeof(cint).} = enum
+  LlamaRopeScalingKind* {.pure, size: sizeof(cint).} = enum
     Unspecified = -1
     None = 0
     Linear = 1
@@ -175,10 +175,10 @@ type
     n_seq_max*: uint32
     n_threads*: int32
     n_threads_batch*: int32
-    rope_scaling_type*: LlamaRopeScalingType
-    pooling_type*: LlamaPoolingType
-    attention_type*: LlamaAttentionType
-    flash_attn_type*: LlamaFlashAttnType
+    rope_scaling_type*: LlamaRopeScalingKind
+    pooling_type*: LlamaPoolingKind
+    attention_type*: LlamaAttentionKind
+    flash_attn_type*: LlamaFlashAttnKind
     rope_freq_base*: cfloat
     rope_freq_scale*: cfloat
     yarn_ext_factor*: cfloat
@@ -276,9 +276,9 @@ proc llama_n_seq_max*(ctx: ptr LlamaContext): uint32 {.llama_ffi.}
 proc llama_get_model*(ctx: ptr LlamaContext): ptr LlamaModel {.llama_ffi.}
 proc llama_get_memory*(ctx: ptr LlamaContext): LlamaMemoryT {.llama_ffi.}
 when defined(static_llama):
-  proc llama_pooling_type_get*(ctx: ptr LlamaContext): LlamaPoolingType {.cdecl, importc: "llama_pooling_type".}
+  proc llama_pooling_type_get*(ctx: ptr LlamaContext): LlamaPoolingKind {.cdecl, importc: "llama_pooling_type".}
 else:
-  proc llama_pooling_type_get*(ctx: ptr LlamaContext): LlamaPoolingType {.cdecl, dynlib: libllama, importc: "llama_pooling_type".}
+  proc llama_pooling_type_get*(ctx: ptr LlamaContext): LlamaPoolingKind {.cdecl, dynlib: libllama, importc: "llama_pooling_type".}
 
 # =====================================================================================================================
 # Memory (KV cache)
@@ -323,9 +323,9 @@ proc llama_get_embeddings_seq*(ctx: ptr LlamaContext, seq_id: LlamaSeqId): ptr c
 # =====================================================================================================================
 
 when defined(static_llama):
-  proc llama_vocab_type_get*(vocab: ptr LlamaVocab): LlamaVocabType {.cdecl, importc: "llama_vocab_type".}
+  proc llama_vocab_type_get*(vocab: ptr LlamaVocab): LlamaVocabKind {.cdecl, importc: "llama_vocab_type".}
 else:
-  proc llama_vocab_type_get*(vocab: ptr LlamaVocab): LlamaVocabType {.cdecl, dynlib: libllama, importc: "llama_vocab_type".}
+  proc llama_vocab_type_get*(vocab: ptr LlamaVocab): LlamaVocabKind {.cdecl, dynlib: libllama, importc: "llama_vocab_type".}
 proc llama_vocab_n_tokens*(vocab: ptr LlamaVocab): int32 {.llama_ffi.}
 proc llama_vocab_get_text*(vocab: ptr LlamaVocab, token: LlamaToken): cstring {.llama_ffi.}
 proc llama_vocab_get_score*(vocab: ptr LlamaVocab, token: LlamaToken): cfloat {.llama_ffi.}

@@ -13,7 +13,7 @@ when cpuEndian == bigEndian:
 const ggufMagic = "GGUF"
 
 type
-  GgufType* {.pure.} = enum
+  GgufKind* {.pure.} = enum
     Uint8   = 0
     Int8    = 1
     Uint16  = 2
@@ -29,24 +29,24 @@ type
     Float64 = 12
 
   GgufArray* = object
-    elem_type*: GgufType
+    elem_type*: GgufKind
     count*:     uint64
 
   GgufValue* = object
-    case kind*: GgufType
-    of GgufType.Uint8:   u8*:  uint8
-    of GgufType.Int8:    i8*:  int8
-    of GgufType.Uint16:  u16*: uint16
-    of GgufType.Int16:   i16*: int16
-    of GgufType.Uint32:  u32*: uint32
-    of GgufType.Int32:   i32*: int32
-    of GgufType.Float32: f32*: float32
-    of GgufType.Bool:    b*:   bool
-    of GgufType.String:  s*:   string
-    of GgufType.Array:   arr*: GgufArray
-    of GgufType.Uint64:  u64*: uint64
-    of GgufType.Int64:   i64*: int64
-    of GgufType.Float64: f64*: float64
+    case kind*: GgufKind
+    of GgufKind.Uint8:   u8*:  uint8
+    of GgufKind.Int8:    i8*:  int8
+    of GgufKind.Uint16:  u16*: uint16
+    of GgufKind.Int16:   i16*: int16
+    of GgufKind.Uint32:  u32*: uint32
+    of GgufKind.Int32:   i32*: int32
+    of GgufKind.Float32: f32*: float32
+    of GgufKind.Bool:    b*:   bool
+    of GgufKind.String:  s*:   string
+    of GgufKind.Array:   arr*: GgufArray
+    of GgufKind.Uint64:  u64*: uint64
+    of GgufKind.Int64:   i64*: int64
+    of GgufKind.Float64: f64*: float64
 
   GgufTensorMeta* = object
     name*:      string
@@ -124,28 +124,28 @@ proc readGgufStr(s: Stream): string =
   if s.readData(addr result[0], int(len)) != int(len):
     raise newException(IOError, "gguf: truncated string")
 
-proc readGgufType(s: Stream): GgufType =
+proc readGgufType(s: Stream): GgufKind =
   let raw = readU32(s)
-  if raw > uint32(GgufType.high):
+  if raw > uint32(GgufKind.high):
     raise newException(ValueError, "gguf: unknown value type: " & $raw)
-  GgufType(int(raw))
+  GgufKind(int(raw))
 
-func elemSize(t: GgufType): int =
+func elemSize(t: GgufKind): int =
   case t
-  of GgufType.Uint8, GgufType.Int8, GgufType.Bool: 1
-  of GgufType.Uint16, GgufType.Int16: 2
-  of GgufType.Uint32, GgufType.Int32, GgufType.Float32: 4
-  of GgufType.Uint64, GgufType.Int64, GgufType.Float64: 8
-  of GgufType.String, GgufType.Array: 0
+  of GgufKind.Uint8, GgufKind.Int8, GgufKind.Bool: 1
+  of GgufKind.Uint16, GgufKind.Int16: 2
+  of GgufKind.Uint32, GgufKind.Int32, GgufKind.Float32: 4
+  of GgufKind.Uint64, GgufKind.Int64, GgufKind.Float64: 8
+  of GgufKind.String, GgufKind.Array: 0
 
-proc skipArray(s: Stream, elem_type: GgufType, count: uint64) =
+proc skipArray(s: Stream, elem_type: GgufKind, count: uint64) =
   case elem_type
-  of GgufType.String:
+  of GgufKind.String:
     for _ in 0'u64 ..< count:
       let len = readU64(s)
       if len > 0:
         s.setPosition(s.getPosition() + int(len))
-  of GgufType.Array:
+  of GgufKind.Array:
     raise newException(ValueError, "gguf: nested arrays are not supported")
   else:
     let sz = elemSize(elem_type)
@@ -156,23 +156,23 @@ proc skipArray(s: Stream, elem_type: GgufType, count: uint64) =
 proc readGgufValue(s: Stream): GgufValue =
   let t = readGgufType(s)
   case t
-  of GgufType.Uint8:   GgufValue(kind: GgufType.Uint8,   u8:  readU8(s))
-  of GgufType.Int8:    GgufValue(kind: GgufType.Int8,    i8:  readI8(s))
-  of GgufType.Uint16:  GgufValue(kind: GgufType.Uint16,  u16: readU16(s))
-  of GgufType.Int16:   GgufValue(kind: GgufType.Int16,   i16: readI16(s))
-  of GgufType.Uint32:  GgufValue(kind: GgufType.Uint32,  u32: readU32(s))
-  of GgufType.Int32:   GgufValue(kind: GgufType.Int32,   i32: readI32(s))
-  of GgufType.Float32: GgufValue(kind: GgufType.Float32, f32: readF32(s))
-  of GgufType.Bool:    GgufValue(kind: GgufType.Bool,    b:   readU8(s) != 0)
-  of GgufType.String:  GgufValue(kind: GgufType.String,  s:   readGgufStr(s))
-  of GgufType.Array:
+  of GgufKind.Uint8:   GgufValue(kind: GgufKind.Uint8,   u8:  readU8(s))
+  of GgufKind.Int8:    GgufValue(kind: GgufKind.Int8,    i8:  readI8(s))
+  of GgufKind.Uint16:  GgufValue(kind: GgufKind.Uint16,  u16: readU16(s))
+  of GgufKind.Int16:   GgufValue(kind: GgufKind.Int16,   i16: readI16(s))
+  of GgufKind.Uint32:  GgufValue(kind: GgufKind.Uint32,  u32: readU32(s))
+  of GgufKind.Int32:   GgufValue(kind: GgufKind.Int32,   i32: readI32(s))
+  of GgufKind.Float32: GgufValue(kind: GgufKind.Float32, f32: readF32(s))
+  of GgufKind.Bool:    GgufValue(kind: GgufKind.Bool,    b:   readU8(s) != 0)
+  of GgufKind.String:  GgufValue(kind: GgufKind.String,  s:   readGgufStr(s))
+  of GgufKind.Array:
     let et = readGgufType(s)
     let count = readU64(s)
     skipArray(s, et, count)
-    GgufValue(kind: GgufType.Array, arr: GgufArray(elem_type: et, count: count))
-  of GgufType.Uint64:  GgufValue(kind: GgufType.Uint64,  u64: readU64(s))
-  of GgufType.Int64:   GgufValue(kind: GgufType.Int64,   i64: readI64(s))
-  of GgufType.Float64: GgufValue(kind: GgufType.Float64, f64: readF64(s))
+    GgufValue(kind: GgufKind.Array, arr: GgufArray(elem_type: et, count: count))
+  of GgufKind.Uint64:  GgufValue(kind: GgufKind.Uint64,  u64: readU64(s))
+  of GgufKind.Int64:   GgufValue(kind: GgufKind.Int64,   i64: readI64(s))
+  of GgufKind.Float64: GgufValue(kind: GgufKind.Float64, f64: readF64(s))
 
 proc readGgufTensorMeta(s: Stream): GgufTensorMeta =
   let name = readGgufStr(s)
@@ -232,22 +232,22 @@ func getStr*(m: GgufMeta, key: string): Choice[string] =
   ## Return a string KV value, or None if missing or wrong type.
   if key notin m.kv: return none[string]()
   let v = m.kv[key]
-  if v.kind == GgufType.String: good(v.s) else: none[string]()
+  if v.kind == GgufKind.String: good(v.s) else: none[string]()
 
 func getU32*(m: GgufMeta, key: string): Choice[uint32] =
   ## Return a uint32 KV value, or None if missing or wrong type.
   if key notin m.kv: return none[uint32]()
   let v = m.kv[key]
-  if v.kind == GgufType.Uint32: good(v.u32) else: none[uint32]()
+  if v.kind == GgufKind.Uint32: good(v.u32) else: none[uint32]()
 
 func getF32*(m: GgufMeta, key: string): Choice[float32] =
   ## Return a float32 KV value, or None if missing or wrong type.
   if key notin m.kv: return none[float32]()
   let v = m.kv[key]
-  if v.kind == GgufType.Float32: good(v.f32) else: none[float32]()
+  if v.kind == GgufKind.Float32: good(v.f32) else: none[float32]()
 
 func getU64*(m: GgufMeta, key: string): Choice[uint64] =
   ## Return a uint64 KV value, or None if missing or wrong type.
   if key notin m.kv: return none[uint64]()
   let v = m.kv[key]
-  if v.kind == GgufType.Uint64: good(v.u64) else: none[uint64]()
+  if v.kind == GgufKind.Uint64: good(v.u64) else: none[uint64]()
