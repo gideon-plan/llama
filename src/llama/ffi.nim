@@ -47,71 +47,71 @@ type
 # =====================================================================================================================
 
 type
-  LlamaVocabType* {.size: sizeof(cint).} = enum
-    lvtNone = 0
-    lvtSpm = 1
-    lvtBpe = 2
-    lvtWpm = 3
-    lvtUgm = 4
-    lvtRwkv = 5
-    lvtPlamo2 = 6
+  LlamaVocabType* {.pure, size: sizeof(cint).} = enum
+    None = 0
+    Spm = 1
+    Bpe = 2
+    Wpm = 3
+    Ugm = 4
+    Rwkv = 5
+    Plamo2 = 6
 
-  LlamaTokenType* {.size: sizeof(cint).} = enum
-    lttUndefined = 0
-    lttNormal = 1
-    lttUnknown = 2
-    lttControl = 3
-    lttUserDefined = 4
-    lttUnused = 5
-    lttByte = 6
+  LlamaTokenType* {.pure, size: sizeof(cint).} = enum
+    Undefined = 0
+    Normal = 1
+    Unknown = 2
+    Control = 3
+    UserDefined = 4
+    Unused = 5
+    Byte = 6
 
-  LlamaTokenAttr* {.size: sizeof(cint).} = enum
-    ltaUndefined = 0
-    ltaUnknown = 1
-    ltaUnused = 2
-    ltaNormal = 4
-    ltaControl = 8
-    ltaUserDefined = 16
-    ltaByte = 32
-    ltaNormalized = 64
-    ltaLstrip = 128
-    ltaRstrip = 256
-    ltaSingleWord = 512
+  LlamaTokenAttr* {.pure, size: sizeof(cint).} = enum
+    Undefined = 0
+    Unknown = 1
+    Unused = 2
+    Normal = 4
+    Control = 8
+    UserDefined = 16
+    Byte = 32
+    Normalized = 64
+    Lstrip = 128
+    Rstrip = 256
+    SingleWord = 512
 
-  LlamaPoolingType* {.size: sizeof(cint).} = enum
-    lptUnspecified = -1
-    lptNone = 0
-    lptMean = 1
-    lptCls = 2
-    lptLast = 3
-    lptRank = 4
+  LlamaPoolingType* {.pure, size: sizeof(cint).} = enum
+    Unspecified = -1
+    None = 0
+    Mean = 1
+    Cls = 2
+    Last = 3
+    Rank = 4
 
-  LlamaAttentionType* {.size: sizeof(cint).} = enum
-    latUnspecified = -1
-    latCausal = 0
-    latNonCausal = 1
+  LlamaAttentionType* {.pure, size: sizeof(cint).} = enum
+    Unspecified = -1
+    Causal = 0
+    NonCausal = 1
 
-  LlamaFlashAttnType* {.size: sizeof(cint).} = enum
-    lfatAuto = -1
-    lfatDisabled = 0
-    lfatEnabled = 1
+  LlamaFlashAttnType* {.pure, size: sizeof(cint).} = enum
+    Auto = -1
+    Disabled = 0
+    Enabled = 1
 
-  LlamaSplitMode* {.size: sizeof(cint).} = enum
-    lsmNone = 0
-    lsmLayer = 1
-    lsmRow = 2
+  LlamaSplitMode* {.pure, size: sizeof(cint).} = enum
+    None = 0
+    Layer = 1
+    Row = 2
 
-  LlamaRopeScalingType* {.size: sizeof(cint).} = enum
-    lrstUnspecified = -1
-    lrstNone = 0
-    lrstLinear = 1
-    lrstYarn = 2
-    lrstLongrope = 3
+  LlamaRopeScalingType* {.pure, size: sizeof(cint).} = enum
+    Unspecified = -1
+    None = 0
+    Linear = 1
+    Yarn = 2
+    Longrope = 3
 
-  LlamaParamsFitStatus* {.size: sizeof(cint).} = enum
-    lpfsSuccess = 0
-    lpfsFailure = 1
-    lpfsError = 2
+  LlamaParamsFitStatus* {.pure, size: sizeof(cint).} = enum
+    Success = 0
+    Failure = 1
+    Error = 2
 
 # =====================================================================================================================
 # Structs

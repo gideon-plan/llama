@@ -16,10 +16,10 @@ type
   LlamaError* = object
     msg*: string
 
-  DecodeStatus* = enum
-    dsSuccess = 0
-    dsNoKvSlot = 1
-    dsAborted = 2
+  DecodeStatus* {.pure.} = enum
+    Success = 0
+    NoKvSlot = 1
+    Aborted = 2
 
 # =====================================================================================================================
 # Managed types with Life tracking
@@ -206,11 +206,11 @@ proc decode*(c: var Context, tokens: seq[LlamaToken]): Choice[DecodeStatus] =
   let rc = llama_decode(c.raw, batch)
   case rc
   of 0:
-    good(dsSuccess)
+    good(DecodeStatus.Success)
   of 1:
-    ugly(dsNoKvSlot, "no KV slot available; reduce batch size or increase context")
+    ugly(DecodeStatus.NoKvSlot, "no KV slot available; reduce batch size or increase context")
   of 2:
-    ugly(dsAborted, "decode aborted by callback")
+    ugly(DecodeStatus.Aborted, "decode aborted by callback")
   else:
     if rc == -1:
       bad[DecodeStatus]("llama", "invalid input batch")

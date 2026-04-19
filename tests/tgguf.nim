@@ -22,17 +22,17 @@ proc appendStr(buf: var string, s: string) =
 
 proc appendKvStr(buf: var string, key, val: string) =
   appendStr(buf, key)
-  buf.append(uint32(8))  # gtString
+  buf.append(uint32(8))  # GgufType.String
   appendStr(buf, val)
 
 proc appendKvU32(buf: var string, key: string, val: uint32) =
   appendStr(buf, key)
-  buf.append(uint32(4))  # gtUint32
+  buf.append(uint32(4))  # GgufType.Uint32
   buf.append(val)
 
 proc appendKvF32(buf: var string, key: string, val: float32) =
   appendStr(buf, key)
-  buf.append(uint32(6))  # gtFloat32
+  buf.append(uint32(6))  # GgufType.Float32
   buf.append(val)
 
 proc appendTensor(buf: var string, name: string, dims: seq[uint64], elem_type: int32, offset: uint64) =
